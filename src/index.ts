@@ -1,16 +1,21 @@
 import "dotenv/config";
-import { client } from "./llm/client.ts";
+
+import { client, model } from "./llm/client.ts";
+import { tools } from "./tools/index.ts";
 
 async function main() {
-    const response = await client.responses.create({
-        model: process.env.DEEPSEEK_MODEL!,
-        instructions: "你是一个专业的编程助手",
-        input: "请解释什么是 Agent Loop",
-    });
+  const response = await client.responses.create({
+    model,
+    instructions: `
+你是代码分析助手。
+当需要了解本地项目时，请调用工具。
+不要猜测项目中的文件或目录。
+    `,
+    input: "请列出当前项目的根目录文件",
+    tools,
+  });
 
-    console.log(response);
-    console.log("模型输出：");
-    console.log(response.output_text);
+  console.dir(response.output, { depth: null });
 }
 
-main();
+main().catch(console.error);
