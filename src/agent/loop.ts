@@ -1,7 +1,7 @@
 import type OpenAI from "openai";
 
 import { client, model } from "../llm/client.ts";
-import { executeTool, tools } from "../tools";
+import { executeTool, tools } from "../tools/index.ts";
 
 type InputItem = OpenAI.Responses.ResponseInputItem;
 

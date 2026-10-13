@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import { runAgent } from "./agent/loop";
+import { runAgent } from "./agent/loop.ts";
 
 async function main() {
     const question =
