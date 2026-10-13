@@ -2,6 +2,7 @@ import type OpenAI from "openai";
 
 import { listFiles } from "./list-files.ts";
 import { readFile } from "./read-file.ts";
+import { writeFile } from "./write-file.ts";
 
 export const tools: OpenAI.Responses.Tool[] = [
     {
@@ -34,6 +35,27 @@ export const tools: OpenAI.Responses.Tool[] = [
                 },
             },
             required: ["file_path"],
+            additionalProperties: false,
+        },
+        strict: true,
+    },
+    {
+        type: "function",
+        name: "write_file",
+        description: "在工作区指定路径创建或覆盖文件，自动创建父目录",
+        parameters: {
+            type: "object",
+            properties: {
+                file_path: {
+                    type: "string",
+                    description: "相对工作区根目录的文件路径",
+                },
+                content: {
+                    type: "string",
+                    description: "要写入文件的完整内容",
+                },
+            },
+            required: ["file_path", "content"],
             additionalProperties: false,
         },
         strict: true,
@@ -73,7 +95,17 @@ export async function executeTool(
 
             return await readFile(params.file_path);
         }
+        case "write_file": {
+            if (typeof params.file_path !== "string") {
+                throw new Error("file_path must be a string");
+            }
 
+            if (typeof params.content !== "string") {
+                throw new Error("content must be a string");
+            }
+
+            return await writeFile(params.file_path, params.content);
+        }
         default:
             throw new Error('Unknown tool: ${name}');
     }
