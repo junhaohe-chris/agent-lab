@@ -107,6 +107,6 @@ export async function executeTool(
             return await writeFile(params.file_path, params.content);
         }
         default:
-            throw new Error('Unknown tool: ${name}');
+            throw new Error(`Unknown tool: ${name}`);
     }
 }
